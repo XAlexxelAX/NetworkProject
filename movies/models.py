@@ -13,7 +13,7 @@ class Hall(models.Model):
 
 
 class Movie(models.Model):
-    movie_name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30)
     year = models.PositiveSmallIntegerField(default=0)
     duration = models.DurationField(default=timedelta())
     genres = models.CharField(max_length=100)
