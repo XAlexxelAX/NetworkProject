@@ -15,11 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from cinema import views as cv
 
 urlpatterns = [
-    path('cinema/', include('cinema.urls')),
-    path('user/', include('user.urls')),
     path('admin/', admin.site.urls),
-    path('', cv.index),
+    #path('', admin.site.urls),
 ]
