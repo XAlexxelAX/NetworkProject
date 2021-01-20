@@ -20,6 +20,6 @@ from movies import views as movies_views
 urlpatterns = [
     path('home/movie/', movies_views.movie_view),
     path('admin/', admin.site.urls),
-    path('home/movie/',movies_views.movie_view),
-    path('home/', movies_views.home_view),
+    path('', movies_views.home_view),
+    url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]
