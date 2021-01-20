@@ -14,10 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.shortcuts import render
 from django.urls import include, path
+from django.conf.urls import url
 from movies import views as movies_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', movies_views.home_view),
+    url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]
