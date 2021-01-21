@@ -17,15 +17,16 @@
          height: 100vh;
          background: url("{% static "images/bg.jpg" %}") no-repeat 50% 50%;
          background-size: cover;
+         background-attachment: fixed;
          z-index:-1;
       }
          .content {
-               margin-top: 50px;
+               padding-top: 100px;
+               padding-left: 100px;
                width: 94%;
-               margin: 4em auto;
+               color: #aaa;
                font-size: 20px;
                line-height: 30px;
-               text-align: center;
          }
 
          .logo {
@@ -134,6 +135,8 @@
 </head>
 <body>
     {% include "navbar.html" %}
+    <div class="content">
     {% block mainbody %}
     {% endblock %}
+    </div>
 </body>
