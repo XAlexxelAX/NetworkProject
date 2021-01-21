@@ -1,5 +1,5 @@
-from datetime import timedelta
-
+from datetime import timedelta, date
+from django.utils.timezone import now
 from django.db import models
 from django.core.validators import MaxValueValidator,MinValueValidator
 
@@ -13,11 +13,11 @@ class Hall(models.Model):
 
 
 class Movie(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(blank=False, max_length=30)
     year = models.PositiveSmallIntegerField(default=0)
     duration = models.DurationField(default=timedelta())
-    genres = models.CharField(max_length=100)
-    rate = models.DecimalField(decimal_places=1, max_digits=2, default=0, validators=(MinValueValidator(0), MaxValueValidator(10)))
+    genres = models.CharField(blank=False, max_length=100)
+    rate = models.DecimalField(decimal_places=1, max_digits=3, default=0, validators=(MinValueValidator(0), MaxValueValidator(10)))
     poster = models.URLField(default='')
 
 

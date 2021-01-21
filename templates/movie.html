@@ -1,9 +1,67 @@
 {% extends "base.html" %}
+{% load static %}
+{% block mainbody %}
+<html>
+<head>
+    <style>
+        .bg {
+            border-style:groove;
+            background: url("{% static "images/movie_detail_bg.jpg" %}") no-repeat 50% 50%;
+            background-size: cover;
+        }
+        .img{
+            padding:10px;
+        }
+        .movieTitle{
+            padding-bottom: 30px;
+            font-size: 60px;
+            color: black;
+        }
+        .movieDetails{
+            padding-top:20px;
+            padding-left: 50px;
+            padding-bottom:20px;
+            color: black;
+        }
+        .buttonCont{
+            padding-top:20px;
+            text-align:center;
+        }
+        .button{
+            border-style:groove;
+            border-color:#aaa;
+            color:black;
+        }
+    </style>
+</head>
+<body>
+<div class="bg">
+    <div class="media">
+        <div class="img">
+            <img src={{ movie.poster }} width="300" height="500"></img>
+        </div>
+        <div class="movieDetails">
+            <h5 class="movieTitle">{{ movie.name }}</h5>
+            <h5>Duration: {{movie.duration}}</h5>
+            <h5>Genre: {{movie.genre}}</h5>
+            <h5>Year: {{movie.year}}</h5>
+            <h5>Rating: {{movie.rate}}</h5>
+            {% for screening in tickets %}
+            <li><a href="/tickets/{{ screening.id }}">{{screening.screenDate}} </a></li>
+            {% endfor %}
+            <div class="buttonCont">
+                {% if tickets %}
+                <a href="/screenings/{{ movie.id }}">
+                <span class="button">Screenings</span>
+                </a>
+                {% else %}
+                <h5>Sorry, we couldn't find any screenings.</h5>
+                {% endif %}
 
-<h6>movie.name</h6>
-<picture>movie.poster</picture>
-<h3>Screening Dates:movie.dates</h3>
-<h3>Duration:movie.duration</h3>
-<h2>Genre:movie.genre</h2>
-<h2>Year:movie.year</h2>
-<h2>Rating:movie.rate</h2>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}
