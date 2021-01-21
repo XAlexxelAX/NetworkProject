@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block mainbody %}
+<html>
+<head>
+    <style>
+        .bg {
+            border-style:groove;
+            background: url("{% static "images/movie_detail_bg.jpg" %}") no-repeat 50% 50%;
+            background-size: cover;
+        }
+        .movieDetails{
+            color: black;
+        }
+        .movieTitle{
+            padding-bottom: 30px;
+            font-size: 60px;
+            color: black
+        }
+    </style>
+</head>
+<body>
+<div class="bg">
+    <div class="media">
+        <div class="movieDetails">
+            <h5 class="movieTitle">{{ name }}</h5>
+            {%for screening in screenings %}
+            <li><a href=/tickets/{{ id }}">{{ screening.screenDate }}</a></li>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

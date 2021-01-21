@@ -26,7 +26,6 @@ class Screening(models.Model):
     hall = models.ForeignKey(Hall, on_delete=models.PROTECT, related_name='hall', null=True)
     screenDate = models.DateTimeField()
     price = models.DecimalField(decimal_places=2, max_digits=20, default=39.99, validators=[MinValueValidator(0)])
-    relevant = models.BooleanField(default=False)
 
 
 class Ticket(models.Model):

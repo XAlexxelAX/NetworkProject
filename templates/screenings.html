@@ -9,10 +9,13 @@
             background: url("{% static "images/movie_detail_bg.jpg" %}") no-repeat 50% 50%;
             background-size: cover;
         }
+        .movieDetails{
+            color: black;
+        }
         .movieTitle{
             padding-bottom: 30px;
             font-size: 60px;
-            color: black;
+            color: black
         }
     </style>
 </head>
@@ -20,7 +23,10 @@
 <div class="bg">
     <div class="media">
         <div class="movieDetails">
-            <h5 class="movieTitle">{{ movie.name }}</h5>
+            <h5 class="movieTitle">{{ name }}</h5>
+            {%for screening in screenings %}
+            <li><a href="/tickets/{{ screening.id }}">{{ screening.screenDate }}</a></li>
+            {% endfor %}
         </div>
     </div>
 </div>

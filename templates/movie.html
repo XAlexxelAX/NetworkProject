@@ -47,12 +47,17 @@
             <h5>Year: {{movie.year}}</h5>
             <h5>Rating: {{movie.rate}}</h5>
             {% for screening in tickets %}
-                <li>{{screening.screenDate}} </li>
+            <li><a href="/tickets/{{ screening.id }}">{{screening.screenDate}} </a></li>
             {% endfor %}
             <div class="buttonCont">
-            <a href="/tickets/{{ movie.id }}">
-                <span class="button">Tickets</span>
-            </a>
+                {% if tickets %}
+                <a href="/screenings/{{ movie.id }}">
+                <span class="button">Screenings</span>
+                </a>
+                {% else %}
+                <h5>Sorry, we couldn't find any screenings.</h5>
+                {% endif %}
+
             </div>
         </div>
     </div>
