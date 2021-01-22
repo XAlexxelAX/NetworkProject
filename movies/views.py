@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from movies.models import Movie, Screening
+from movies.models import Movie, Screening, Ticket
 from django.utils.timezone import now
 
 # Create your views here.
@@ -25,9 +25,21 @@ def movie_screenings(request,sid):
     context['name'] = context['screenings'][0].movie.name
     return render(request, "screenings.html", context)
 
-def movie_tickets(request,mid):
+def movie_tickets(request,sid):
     context={}
+    context['screening'] = Screening.objects.get(id=sid)
+    context['ticketDict'] = {}
+    for ticket in Ticket.objects.filter(screening__id=sid):
+        try:#{1:{2:ticket, 10:ticket},15:{5:ticket,17:ticket}}
+            context['ticketDict'][ticket.row][ticket.seat]=ticket
+        except:
+            context['ticketDict'][ticket.row]={}
+            context['ticketDict'][ticket.row][ticket.seat] = ticket
+    context['rows'] = range(context['screening'].hall.rows)
+    context['seats'] = range(context['screening'].hall.columns)
+    context['name'] = context['screening'].movie.name
     return render(request, "tickets.html", context)
 
 def movie_view(request):
     return render(request, 'movie.html', {})
+
