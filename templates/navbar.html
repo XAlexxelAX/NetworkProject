@@ -46,14 +46,19 @@
                      <li><a href='{% url 'home' %}'>Home</a></li>
                      <li><a href='{% url 'movies' %}'>Movies</a></li>
                      {% if request.user.is_authenticated %}
-                        <li>{{request.user}}</li>
+                        <button type="submit" class="btn" value="" name="logout" onclick="logout()">{{request.user}}/Logout</button>
                      {%else%}
-                        <li>Login/Create New Account</li>
+                        <li><a href='{% url 'user_login' %}'>Login/Create New Account</li>
                      {%endif%}
                   </ul>
                </div>
             </nav>
          </header>
       </div>
+      <script>
+         function logout() {
+            window.alert("You've been logged out successfully!");
+         }
+      </script>
    </body>
 </html>
