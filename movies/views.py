@@ -2,7 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from movies.models import Movie, Screening, Ticket
 from django.utils.timezone import now
+from django.template.defaulttags import register
 
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 # Create your views here.
 
 def home_view(request):
