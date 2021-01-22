@@ -32,6 +32,13 @@ def movie_screenings(request,sid):
     return render(request, "screenings.html", context)
 
 def movie_tickets(request,sid):
+    if request.POST: #create new tickets and change color to
+        for item in request.POST.keys():
+            if 'seat' in item:
+                Ticket.objects.create(screening=Screening.objects.get(id=sid),row=int(item[5]),seat=int(item[7]),isTemp=True,
+                                      user=request.user.id)
+
+
     context={}
     context['screening'] = Screening.objects.get(id=sid)
     context['ticketDict'] = {}
@@ -48,4 +55,6 @@ def movie_tickets(request,sid):
 
 def movie_view(request):
     return render(request, 'movie.html', {})
+
+
 

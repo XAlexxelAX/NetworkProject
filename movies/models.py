@@ -32,3 +32,5 @@ class Ticket(models.Model):
     screening = models.ForeignKey(Screening, on_delete=models.PROTECT, null=True)
     row = models.PositiveSmallIntegerField(default=0)
     seat = models.PositiveSmallIntegerField(default=0)
+    isTemp=models.BooleanField(default=True)
+    user=models.SmallIntegerField(default=-1)
