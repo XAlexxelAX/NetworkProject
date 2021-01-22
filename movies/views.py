@@ -5,8 +5,10 @@ from django.utils.timezone import now
 from django.template.defaulttags import register
 
 @register.filter
+#function that returns the dict[key] in django template
 def get_item(dictionary, key):
     return dictionary.get(key)
+
 # Create your views here.
 
 def home_view(request):

@@ -41,10 +41,12 @@
                         <div class="seatBox">
                             {% if s in ticketDict|get_item:r %}
                                 <img onclick="" src="{% static "images/taken_seat.png" %}" width="100" height="150"></img>
+                                <p style="color:red;">Taken</p>
                             {% else %}
                                 <img onclick="" src="{% static "images/open_seat.jpg" %}" width="100" height="150"></img>
+                                <p style="color:blue;">{{r|add:1}},{{s|add:1}}</p>
                             {%endif%}
-                             <h1>{{r|add:1}},{{s|add:1}}</h1>
+
                         </div>
                     </td>
                     {% endfor %}
