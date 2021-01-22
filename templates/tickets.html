@@ -15,14 +15,14 @@
             text-align: center;
             color: black;
             margin: 0px auto;
-            width: 500px;
+            width: 550px;
         }
         .movieTitle{
             padding-bottom: 30px;
             font-size: 60px;
             color: black
         }
-        .seatBox{
+        .takenSeatBox{
             border-style:groove;
         }
     </style>
@@ -38,16 +38,18 @@
                      <h1>{{ticketDict.r}}</h1>
                     {% for s in seats %}
                     <td>
-                        <div class="seatBox">
-                            {% if s in ticketDict|get_item:r %}
+                        {% if s in ticketDict|get_item:r %}
+                            <div class="takenSeatBox">
                                 <img onclick="" src="{% static "images/taken_seat.png" %}" width="100" height="150"></img>
                                 <p style="color:red;">Taken</p>
+                            </div>
                             {% else %}
-                                <img onclick="" src="{% static "images/open_seat.jpg" %}" width="100" height="150"></img>
+                            <button onclick="seatChosen(this)">
+                                <img src="{% static "images/open_seat.jpg" %}" width="100" height="150"></img>
                                 <p style="color:blue;">{{r|add:1}},{{s|add:1}}</p>
+                            </button>
                             {%endif%}
-
-                        </div>
+                        </button>
                     </td>
                     {% endfor %}
                     </tr>
@@ -56,6 +58,12 @@
         </div>
     </div>
 </div>
+
+<script>
+function seatChosen(r) {
+    window.alert(r.value+"The ticket has been added to your cart :)");
+}
+</script>
 </body>
 </html>
 {% endblock %}
