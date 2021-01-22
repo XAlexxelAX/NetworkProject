@@ -44,7 +44,7 @@
                                 <p style="color:red;">Taken</p>
                             </div>
                             {% else %}
-                            <button onclick="seatChosen('{{r|add:1}}','{{s|add:1}}','{{name}}','{{screening.screenDate}}')">
+                            <button onclick="seatChosen('{{r}}','{{r|add:1}}','{{s}}','{{s|add:1}}','{{name}}','{{screening.screenDate}}')">
                                 <img src="{% static "images/open_seat.jpg" %}" width="100" height="150"></img>
                                 <p style="color:blue;">{{r|add:1}},{{s|add:1}}</p>
                             </button>
@@ -60,9 +60,9 @@
 </div>
 
 <script>
-function seatChosen(r,s,name,date) {
+function seatChosen(r,row,s,seat,name,date) {
     window.alert("New Ticket Has Been Added To Your Cart Successfully!\n\nDetails:\nMovie: "
-        +name+"\nDate: "+date+"\nSeat: ("+r+","+s+")");
+        +name+"\nDate: "+date+"\nSeat: ("+row+","+seat+")");
 }
 </script>
 </body>
