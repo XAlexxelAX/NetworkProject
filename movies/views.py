@@ -20,6 +20,12 @@ def multiply(value, arg):
     return value * arg
 
 @register.filter
+def rndDiv(value, arg):
+    if arg!=0:
+        return round(value / arg,1)
+    return 0
+
+@register.filter
 def division(value, arg):
     if arg!=0:
         return value / arg
@@ -41,6 +47,12 @@ def home_view(request):
 
 
 def movie_detail(request, mid):
+    if request.POST:
+        movie=Movie.objects.get(id=mid)
+        movie.sumRatings+=int(request.POST['rate'])
+        movie.countRatings+=1
+        movie.save()
+
     context = {
         'movie': Movie.objects.get(id=mid),
         'tickets': Screening.objects.filter(movie__id=mid).filter(screenDate__gte=now()).order_by('screenDate')[0:5],
