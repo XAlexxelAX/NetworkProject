@@ -15,13 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.shortcuts import render
-from django.urls import include, path
+from django.urls import path
 from movies import views as movies_views
-from movies import models as movies_models
 from django.conf.urls import url
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    url(r'.*logout/', movies_views.user_logout, name='user_logout'),
     path('home/movie/', movies_views.movie_view, name='movie'),
     path('movies/', movies_views.movie_view, name='movies'),
     url(r'^movies/(?P<mid>.*)', movies_views.movie_detail, name='movie_detail'),
@@ -30,8 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', movies_views.home_view, name='home'),
     path('login/', movies_views.user_login, name='user_login'),
-    path('logout/', movies_views.user_logout, name='user_logout'),
     path('cart/', movies_views.cart, name='cart'),
-    path('cart/logout/',  movies_views.user_logout, name='user_logout'),
     url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]

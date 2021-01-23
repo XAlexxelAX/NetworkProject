@@ -36,30 +36,39 @@
 <div class="bg">
         <div class="movieDetails">
             <table>
+
+                {% if user_tickets %}
                 <tr>
-                    <td><h5 class="td">Movie name</h5></td>
+                    <td></td>
+                    <td><h5>Movie name</h5></td>
                     <td><h5>Screening date</h5></td>
                     <td><h5>Hall</h5></td>
                     <td><h5>Row</h5></td>
                     <td><h5>Seat</h5></td>
                     <td><h5>Ticket price</h5></td>
-
                 </tr>
-                <form role="form" action="/cart" method="POST">
+                {%else%}
+                    <h2>Your cart is empty.</h2>
+                {%endif%}
+                <form role="form" action="/cart/" method="POST">
                 {%csrf_token%}
                 {% for t in user_tickets %}
                     <tr>
+                        <td><button type="submit" name="remove" value="{{t.id}}"><img src="{% static 'images/delete.png' %}" height="30px" width="30px"></button></td>
                         <td>{{t.screening.movie.name}}</td>
                         <td>{{t.screening.screenDate}}</td>
                         <td>{{t.screening.hall.hallNum}}</td>
-                        <td>{{t.row}}</td>
-                        <td>{{t.seat}}</td>
+                        <td>{{t.row|add:1}}</td>
+                        <td>{{t.seat|add:1}}</td>
                         <td>{{t.screening.price}}</td>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" name="ticket" value="{{t.id}}"></td>
                     </tr>
                 {% endfor %}
-                    <tr><td><h4>Total price:</h4></td>
-                    <td>{{total}}</td></tr>
+                    {% if user_tickets %}
+                    <tr><td></td><td><h4>Total price:</h4></td>
+                    <td>{{total}}</td>
+                    <td><button type="submit" name="purchase">Purchase</button></td></tr>
+                    {%endif%}
                  </form>
             </table>
         </div>
