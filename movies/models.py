@@ -21,6 +21,8 @@ class Movie(models.Model):
     poster = models.URLField(default='')
     ageLimit = models.PositiveSmallIntegerField(default=0)
     salePrec=models.PositiveSmallIntegerField(default=0)
+    countRatings=models.PositiveSmallIntegerField(default=0)
+    sumRatings=models.PositiveSmallIntegerField(default=0)
 
 class Screening(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT, related_name='movie')

@@ -21,7 +21,9 @@ def multiply(value, arg):
 
 @register.filter
 def division(value, arg):
-    return value / arg
+    if arg!=0:
+        return value / arg
+    return 0
 
 @register.filter
 def sub(value, arg):
@@ -41,8 +43,14 @@ def home_view(request):
 def movie_detail(request, mid):
     context = {
         'movie': Movie.objects.get(id=mid),
-        'tickets': Screening.objects.filter(movie__id=mid).filter(screenDate__gte=now()).order_by('screenDate')[0:5]
+        'tickets': Screening.objects.filter(movie__id=mid).filter(screenDate__gte=now()).order_by('screenDate')[0:5],
+        'isMovieWatched':False
     }
+    if request.user.is_authenticated:
+        for ticket in Ticket.objects.all():
+           if request.user.id==ticket.user and int(ticket.screening.movie.id)==int(mid):
+                context['isMovieWatched']=True
+
     return render(request, "movie.html", context)
 
 
@@ -61,9 +69,15 @@ def movie_tickets(request, sid):
             if 'seat' in item:
                 seat = item.split('_')
                 if request.POST[item] == 'add':
-                    Ticket.objects.create(screening=Screening.objects.get(id=sid),
+                    if request.user.is_authenticated:
+                        Ticket.objects.create(screening=Screening.objects.get(id=sid),
                                           row=int(seat[1]), seat=int(seat[2]),
                                           isTemp=True, user=request.user.id)
+                    else:
+                        t=Ticket.objects.create(screening=Screening.objects.get(id=sid),
+                                          row=int(seat[1]), seat=int(seat[2]),
+                                          isTemp=True, user=-1)
+                        return payment(request, round(t.screening.price-t.screening.movie.salePrec*t.screening.price/100,2),[t])
                 elif request.POST[item] == 'remove':
                     ticketID = Ticket.objects.filter(screening__id=sid).filter(row=int(seat[1])).\
                                             filter(seat=int(seat[2]))[0].id
