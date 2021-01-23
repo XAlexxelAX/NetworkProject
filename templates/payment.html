@@ -86,10 +86,11 @@
               <input id="column-left" type="text" name="expiry" placeholder="MM / YY"/>
               <input id="column-right" type="text" name="cvc" placeholder="CCV"/>
 
+              <form role="form" class="form" action="" method="POST">
               <div class="card-wrapper"></div>
               <input id="input-button" type="submit" value="Submit"/>
               <div class="visa"><img src="{% static "images/visa.png" %}" width="600" height="120"></img></div>
-                <h2>Cost: {{total}}</h2>
+              <h2>Cost: {{total}}</h2>
         </div>
       </form>
     </body>
