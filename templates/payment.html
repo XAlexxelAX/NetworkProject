@@ -87,16 +87,52 @@
           </div> <!-- end of personal-information -->
               <input id="column-left" type="text" name="first-name" placeholder="First Name" required="required"/>
               <input id="column-right" type="text" name="last-name" placeholder="Surname" required="required"/>
-              <input id="input-field" type="text" name="number" placeholder="Card Number" required="required"/>
-              <input id="column-left" type="text" name="expiry" placeholder="MM / YY" required="required"/>
-              <input id="column-right" type="text" name="cvc" placeholder="CCV" required="required"/>
+              <input id="input-field" type="text" name="number" pattern="[0-9]{16}" title="16 digits only" placeholder="Card Number" required="required"/>
+              <input id="column-left" type="text" name="expiry" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" title="MM/YY" placeholder="MM/YY" required="required"/>
+              <input id="column-right" type="text" name="ccv" pattern="[0-9]{3}|[0-9]{4}" title="3/4 digits only" placeholder="CCV" required="required"/>
 
               <form role="form" class="form" action="" method="POST">
               <div class="card-wrapper"></div>
               <input id="input-button" type="submit" value="Submit"/>
-              <div class="visa"><img src="{% static "images/visa.png" %}" width="600" height="120"></img></div>
+
                   <div class="price">
               <h2 style="color:white">Total Price: {{total}}</h2>
+                      <div id="smart-button-container">
+      <div style="text-align: center;">
+        <div id="paypal-button-container"></div>
+      </div>
+    </div>
+      <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=ILS" data-sdk-integration-source="button-factory"></script>
+      <script>
+            function initPayPalButton() {
+              paypal.Buttons({
+                style: {
+                  shape: 'rect',
+                  color: 'gold',
+                  layout: 'vertical',
+                  label: 'paypal',
+
+                },
+
+                createOrder: function(data, actions) {
+                  return actions.order.create({
+                    purchase_units: [{"description":"Ticket Purchace","amount":{"currency_code":"ILS","value":46.79,"breakdown":{"item_total":{"currency_code":"ILS","value":39.99},"shipping":{"currency_code":"ILS","value":0},"tax_total":{"currency_code":"ILS","value":6.8}}}}]
+                  });
+                },
+
+                onApprove: function(data, actions) {
+                  return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                  });
+                },
+
+                onError: function(err) {
+                  console.log(err);
+                }
+              }).render('#paypal-button-container');
+            }
+            initPayPalButton();
+          </script>
                   </div>
               </form>
         </div>

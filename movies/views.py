@@ -5,6 +5,8 @@ from movies.models import Movie, Screening, Ticket
 from django.utils.timezone import now
 from django.template.defaulttags import register
 from django.contrib.auth import authenticate, login, logout
+from verify_email.email_handler import send_verification_email
+from django.contrib.auth.models import User
 
 @register.filter
 #function that returns the dict[key] in django template
@@ -119,6 +121,12 @@ def user_logout(request):
             logout(request)
     return redirect("/")
 
+def user_register(request):
+    #if form.is_valid():
+     #   inactive_user = send_verification_email(request, form)
+    if request.POST:
+            User.objects.create_user(request.POST['username'], request.POST['email'], request.POST['password'])
+    return render(request,'register.html',{})
 
 def payment(request, total, ticketList):
     print("payment"+str(ticketList))
