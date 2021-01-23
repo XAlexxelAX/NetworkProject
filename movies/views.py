@@ -36,12 +36,20 @@ def movie_screenings(request,sid):
     return render(request, "screenings.html", context)
 
 
-def movie_tickets(request,sid):
+def movie_tickets(request, sid):
+    print(request.POST)
     if request.POST: #create new tickets and change img to seats
         for item in request.POST.keys():
             if 'seat' in item:
-                Ticket.objects.create(screening=Screening.objects.get(id=sid),row=int(item[5]),seat=int(item[7]),isTemp=True,
-                                      user=request.user.id)
+                seat = item.split('_')
+                if request.POST[item] == 'add':
+                    Ticket.objects.create(screening=Screening.objects.get(id=sid),
+                                          row=int(seat[1]), seat=int(seat[2]),
+                                          isTemp=True, user=request.user.id)
+                elif request.POST[item] == 'remove':
+                    ticketID = Ticket.objects.filter(screening__id=sid).filter(row=int(seat[1])).\
+                                            filter(seat=int(seat[2]))[0].id
+                    Ticket.objects.get(id=ticketID).delete()
     context={}
     context['screening'] = Screening.objects.get(id=sid)
     context['ticketDict'] = {}
@@ -54,6 +62,7 @@ def movie_tickets(request,sid):
     context['rows'] = range(context['screening'].hall.rows)
     context['seats'] = range(context['screening'].hall.columns)
     context['name'] = context['screening'].movie.name
+    print(context['ticketDict'])
     return render(request, "tickets.html", context)
 
 
@@ -62,16 +71,29 @@ def movie_view(request):
 
 
 def cart(request):
-    context = {
-        'user_tickets': Ticket.objects.filter(user=request.user.id).filter(isTemp=True),
-        'total': 0
-    }
+    context = {'total': 0}
+    if request.POST:
+        if 'remove' in request.POST:
+            Ticket.objects.get(id=int(request.POST['remove'])).delete()
+        if 'purchase' in request.POST:
+            ticketList=[]
+            total = 0
+            for t in request.POST:
+                if 'ticket' in t:
+                    ticket = Ticket.objects.get(id=int(t.split('_')[1]))
+                    ticketList.append(ticket)
+                    total += ticket.screening.price
+            if total > 0:
+                return payment(request, total, ticketList)
+    context['user_tickets'] = Ticket.objects.filter(user=request.user.id).filter(isTemp=True)
     for t in context['user_tickets']:
         context['total'] += t.screening.price
     return render(request, "cart.html", context)
 
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect("/")
     if request.method == 'POST':
         # Process the request if posted data are available
         username = request.POST['username']
@@ -84,17 +106,26 @@ def user_login(request):
             # Success, now let's login the user.
             return redirect("/")
         else:
-            # Incorrect credentials, let's throw an error to the screen.
+            # Incorrect credentials, throw an error to the screen.
             return render(request, 'login.html', {'error_message': 'Incorrect username and / or password.'})
     else:
-        print("getting here all the time")
         # No post data availabe, let's just show the page to the user.
         return render(request, 'login.html',{})
 
 
 def user_logout(request):
-    if request.POST: #create new tickets and change color to
+    if request.POST:
         if 'logout' in request.POST.keys():
             logout(request)
     return redirect("/")
+
+
+def payment(request, total, ticketList):
+    print("payment",ticketList)
+    print("payment",request.POST)
+    if request.POST:
+        for ticket in ticketList:
+            ticket.isTemp = False
+            ticket.save(['isTemp'])
+    return render(request, 'payment.html', {'total': total, 'ticketList': ticketList})
 
