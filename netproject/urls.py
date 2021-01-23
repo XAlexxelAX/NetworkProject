@@ -33,5 +33,6 @@ urlpatterns = [
     path('logout/', movies_views.user_logout, name='user_logout'),
     path('cart/', movies_views.cart, name='cart'),
     path('cart/logout/',  movies_views.user_logout, name='user_logout'),
+    path('payment/',  movies_views.payment, name='payment'),
     url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]

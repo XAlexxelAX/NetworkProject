@@ -107,3 +107,6 @@ def user_logout(request):
             logout(request)
     return redirect("/")
 
+def payment(request):
+    return render(request,'payment.html',{})
+
