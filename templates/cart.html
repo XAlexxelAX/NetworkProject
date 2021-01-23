@@ -8,6 +8,7 @@
         td{
             padding:5px;
             width:100%;
+            border-style:groove;
         }
         .bg {
             border-style:groove;
@@ -42,6 +43,7 @@
                     <td><h5>Row</h5></td>
                     <td><h5>Seat</h5></td>
                     <td><h5>Ticket price</h5></td>
+
                 </tr>
                 <form role="form" action="/cart" method="POST">
                 {%csrf_token%}
@@ -53,6 +55,7 @@
                         <td>{{t.row}}</td>
                         <td>{{t.seat}}</td>
                         <td>{{t.screening.price}}</td>
+                        <td><input type="checkbox"></td>
                     </tr>
                 {% endfor %}
                     <tr><td><h4>Total price:</h4></td>
