@@ -21,6 +21,9 @@ def home_view(request):
 
 
 def movie_detail(request, mid):
+    if mid=='logout/':
+        return user_logout(request)
+
     context = {
         'movie': Movie.objects.get(id=mid),
         'tickets': Screening.objects.filter(movie__id=mid).filter(screenDate__gte=now()).order_by('screenDate')[0:5]
@@ -29,6 +32,8 @@ def movie_detail(request, mid):
 
 
 def movie_screenings(request,sid):
+    if sid=='logout/':
+        return user_logout(request)
     context={
         'screenings': Screening.objects.filter(movie__id=sid).filter(screenDate__gte=now()).order_by('screenDate')
     }
@@ -37,6 +42,9 @@ def movie_screenings(request,sid):
 
 
 def movie_tickets(request,sid):
+    if sid == 'logout/':
+        return user_logout(request)
+
     if request.POST: #create new tickets and change img to seats
         for item in request.POST.keys():
             if 'seat' in item:
@@ -62,6 +70,7 @@ def movie_view(request):
 
 
 def cart(request):
+    print(0)
     context = {
         'user_tickets': Ticket.objects.filter(user=request.user.id).filter(isTemp=True),
         'total': 0
@@ -84,7 +93,7 @@ def user_login(request):
             # Success, now let's login the user.
             return redirect("/")
         else:
-            # Incorrect credentials, let's throw an error to the screen.
+            # Incorrect credentials, throw an error to the screen.
             return render(request, 'login.html', {'error_message': 'Incorrect username and / or password.'})
     else:
         print("getting here all the time")
@@ -93,7 +102,7 @@ def user_login(request):
 
 
 def user_logout(request):
-    if request.POST: #create new tickets and change color to
+    if request.POST:
         if 'logout' in request.POST.keys():
             logout(request)
     return redirect("/")

@@ -6,6 +6,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
    <head>
+      <style>
+         .logout_btn{
+           border: none;
+           background-color: inherit;
+           display: white;
+         }
+         .logout_btn:hover{
+            background-color: blue;
+         }
+      </style>
    </head>
    <body>
 
@@ -50,7 +60,7 @@
                         <li>
                         <form action = "logout/" method="post">
                         {% csrf_token %}
-                           <button name="logout" onclick="logout()">{{request.user}}/Logout</button>
+                              <button class="logout_btn" name="logout" onclick="logout()" style="color:white;">{{request.user}}/Logout</button>
                         </form>
                            </li>
                      {%else%}
