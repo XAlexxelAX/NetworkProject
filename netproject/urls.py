@@ -30,5 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', movies_views.home_view, name='home'),
     path('login/', movies_views.user_login, name='user_login'),
+    path('logout/', movies_views.user_logout, name='user_logout'),
+    path('cart/', movies_views.cart, name='cart'),
     url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]

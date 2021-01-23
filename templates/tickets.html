@@ -35,8 +35,9 @@
             <table>
                 {% for r in rows %}
                 <tr>
-                    {%csrf_token%}
                      <form role="form" action="/tickets/{{ screening.id }}" method="POST">
+
+                    {%csrf_token%}
                     {% for s in seats %}
                     <td>
                         <div class="seatBox">
