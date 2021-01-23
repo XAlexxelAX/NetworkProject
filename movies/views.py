@@ -1,3 +1,5 @@
+import math
+
 from django.conf.urls import url
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -16,7 +18,8 @@ def get_item(dictionary, key):
 
 def home_view(request):
     context = {}
-    context['movies'] = dict(sorted({movie.id: movie for movie in Movie.objects.all()}.items(), key=lambda item: item[1].rate, reverse=True))
+    context['movies'] = dict(sorted({movie.id: movie for movie in Movie.objects.all()}
+                                    .items(), key=lambda item: item[1].rate, reverse=True))
     return render(request, 'home.html', context)
 
 
@@ -67,7 +70,48 @@ def movie_tickets(request, sid):
 
 
 def movie_view(request):
-    return render(request, 'movie.html', {})
+    context = {'screenings': {},'sorting':'rate'}
+    context['movies'] = {movie.id:movie for movie in Movie.objects.all()}
+    for movie in context['movies']:
+        context['screenings'][movie] = Screening.objects.filter(movie__id=movie).filter(screenDate__gte=now()).order_by('screenDate')[0:5]
+    if request.POST:
+        genresList=[]
+        print(request.POST)
+        if 'sortby' in request.POST:
+            if request.POST['sortby'] == 'rate':
+                if 'sorting' in request.POST and request.POST['sorting'] == 'asc':
+                    context['movies'] = dict(sorted(context['movies']
+                                                    .items(), key=lambda item: item[1].rate))
+                else:
+                    context['movies'] = dict(sorted(context['movies']
+                                                    .items(), key=lambda item: item[1].rate, reverse=True))
+            elif request.POST['sortby'] == 'price':
+                if 'sorting' in request.POST and request.POST['sorting'] == 'asc':
+                    context['movies'] = dict(sorted(context['movies'].items()
+                                                    , key=lambda item: min([math.inf]+[s.price for s in Screening.objects.filter(movie__id=item[0])])))
+                else:
+                    context['movies'] = dict(sorted(context['movies'].items()
+                                                    , key=lambda item: min([math.inf]+[s.price for s in Screening.objects.filter(movie__id=item[0])]), reverse=True))
+            elif request.POST['sortby'] =='abc':
+                if 'sorting' in request.POST and request.POST['sorting'] == 'asc':
+                    context['movies'] = dict(sorted(context['movies']
+                                                    .items(), key=lambda item: item[1].name))
+                else:
+                    context['movies'] = dict(sorted(context['movies']
+                                                    .items(), key=lambda item: item[1].name, reverse=True))
+        for r in request.POST:
+            if 'genres' in r:
+                genresList.append(r.split('_')[1].lower())
+        if genresList:
+            cpyDict = context['movies'].copy()
+            for m in cpyDict:
+                m_genre_list = context['movies'][m].genres.lower().replace(' ', '').split(',')
+                if not set(set(genresList) & set(m_genre_list)):
+                    context['movies'].pop(m)
+    else:
+        context['movies'] = dict(sorted(context['movies']
+                                        .items(), key=lambda item: item[1].rate, reverse=True))
+    return render(request, 'movieGallery.html', context)
 
 
 def cart(request):
