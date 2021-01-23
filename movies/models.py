@@ -20,7 +20,7 @@ class Movie(models.Model):
     rate = models.DecimalField(decimal_places=1, max_digits=3, default=0, validators=(MinValueValidator(0), MaxValueValidator(10)))
     poster = models.URLField(default='')
     ageLimit = models.PositiveSmallIntegerField(default=0)
-
+    salePrice=models.PositiveSmallIntegerField(default=0)
 
 class Screening(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT, related_name='movie')

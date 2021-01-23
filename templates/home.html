@@ -144,7 +144,7 @@
 
     {% load static %}
     <div style=" margin-left: 1%;">
-        <p style="color: white"><b>Recommendation For You:</b></p>
+        <p style="color: white"><b>On Sale:</b></p>
         {% for movie in recommendation %}
             <a href="/movie/movie_detail/{{ movie.movieid }}">
                 <img id="poster" class="img-rounded" src="{{ movie.poster }}" width="125" height="180">

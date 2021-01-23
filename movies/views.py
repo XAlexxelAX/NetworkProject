@@ -122,8 +122,6 @@ def user_logout(request):
     return redirect("/")
 
 def user_register(request):
-    #if form.is_valid():
-     #   inactive_user = send_verification_email(request, form)
     if request.POST:
             User.objects.create_user(request.POST['username'], request.POST['email'], request.POST['password'])
     return render(request,'register.html',{})
