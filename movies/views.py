@@ -7,7 +7,7 @@ from movies.models import Movie, Screening, Ticket
 from django.utils.timezone import now
 from django.template.defaulttags import register
 from django.contrib.auth import authenticate, login, logout
-from verify_email.email_handler import send_verification_email
+#from verify_email.email_handler import send_verification_email
 from django.contrib.auth.models import User
 
 @register.filter
@@ -46,7 +46,7 @@ def movie_detail(request, mid):
     return render(request, "movie.html", context)
 
 
-def movie_screenings(request,sid):
+def movie_screenings(request, sid):
     context={
         'screenings': Screening.objects.filter(movie__id=sid).filter(screenDate__gte=now()).order_by('screenDate')
     }
@@ -55,7 +55,8 @@ def movie_screenings(request,sid):
 
 
 def movie_tickets(request, sid):
-    print(request.POST)
+    if not request.user.is_authenticated:
+        return redirect("/login/")
     if request.POST: #create new tickets and change img to seats
         for item in request.POST.keys():
             if 'seat' in item:
@@ -92,7 +93,7 @@ def movie_view(request):
     if request.POST:
         genresList=[]
         print(request.POST)
-        if 'sortby' in request.POST:
+        if 'sortby' in request.POST and 'sorting' in request.POST:
             if request.POST['sortby'] == 'rate':
                 if 'sorting' in request.POST and request.POST['sorting'] == 'asc':
                     context['movies'] = dict(sorted(context['movies']
@@ -114,6 +115,11 @@ def movie_view(request):
                 else:
                     context['movies'] = dict(sorted(context['movies']
                                                     .items(), key=lambda item: item[1].name, reverse=True))
+        if 'sale' in request.POST:
+            cpyDict = context['movies'].copy()
+            for m in cpyDict:
+                if cpyDict[m].salePrec == 0:
+                    context['movies'].pop(m)
         for r in request.POST:
             if 'genres' in r:
                 genresList.append(r.split('_')[1].lower())
@@ -123,6 +129,7 @@ def movie_view(request):
                 m_genre_list = context['movies'][m].genres.lower().replace(' ', '').split(',')
                 if not set(set(genresList) & set(m_genre_list)):
                     context['movies'].pop(m)
+
     else:
         context['movies'] = dict(sorted(context['movies']
                                         .items(), key=lambda item: item[1].rate, reverse=True))
@@ -131,6 +138,7 @@ def movie_view(request):
 
 def cart(request):
     context = {'total': 0}
+    print(request.POST)
     if request.POST:
         if 'remove' in request.POST:
             Ticket.objects.get(id=int(request.POST['remove'])).delete()
@@ -141,12 +149,14 @@ def cart(request):
                 if 'ticket' in t:
                     ticket = Ticket.objects.get(id=int(t.split('_')[1]))
                     ticketList.append(ticket)
-                    total += ticket.screening.price
+                    total += float(ticket.screening.price)*(1-ticket.screening.movie.salePrec/100)
             if total > 0:
-                return payment(request, total, ticketList)
+                return payment(request, round(total, 2), ticketList)
     context['user_tickets'] = Ticket.objects.filter(user=request.user.id).filter(isTemp=True)
     for t in context['user_tickets']:
+        t.screening.price = round(float(t.screening.price)*(1-t.screening.movie.salePrec/100), 2)
         context['total'] += t.screening.price
+        context['total'] = round(context['total'], 2)
     return render(request, "cart.html", context)
 
 

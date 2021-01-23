@@ -61,6 +61,8 @@
                 <input type="radio" value="asc" name="sorting">
                   <label name="des">🡓</label>
                         <input type="radio" value="des" name="sorting">
+                        On Sale
+                        <input type="checkbox" name="sale">
                         <br>
                     <input type="checkbox" name="genres_drama">Drama
                     <input type="checkbox" name="genres_comdey">Comedy
@@ -91,7 +93,7 @@
 
             {%if mid == id %}
             {%for s in screening%}
-            <li><a href="/tickets/{{ screening.id }}">{{s.screenDate}} </a></li>
+            <li><a href="/tickets/{{ s.id }}">{{s.screenDate}} </a></li>
             {%endfor%}
             <div class="buttonCont">
                 {% if screening %}
