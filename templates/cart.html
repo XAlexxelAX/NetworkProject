@@ -61,7 +61,7 @@
                         <td>{{t.row|add:1}}</td>
                         <td>{{t.seat|add:1}}</td>
                         <td>{{t.screening.price}}</td>
-                        <td><input type="checkbox" name="ticket" value="{{t.id}}"></td>
+                        <td><input type="checkbox" name="ticket_{{t.id}}" value=""></td>
                     </tr>
                 {% endfor %}
                     {% if user_tickets %}

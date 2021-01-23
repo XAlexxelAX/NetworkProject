@@ -71,19 +71,20 @@ def movie_view(request):
 
 
 def cart(request):
-    context = {'total':0}
+    context = {'total': 0}
     if request.POST:
-        print(request.POST)
         if 'remove' in request.POST:
             Ticket.objects.get(id=int(request.POST['remove'])).delete()
-        if 'purchase' in request.POST and 'ticket' in request.POST:
+        if 'purchase' in request.POST:
             ticketList=[]
             total = 0
-            for t in request.POST['ticket']:
-                ticket = Ticket.objects.get(id=int(t))
-                ticketList.append(ticket)
-                total += ticket.screening.price
-            return payment(request, total, ticketList)
+            for t in request.POST:
+                if 'ticket' in t:
+                    ticket = Ticket.objects.get(id=int(t.split('_')[1]))
+                    ticketList.append(ticket)
+                    total += ticket.screening.price
+            if total > 0:
+                return payment(request, total, ticketList)
     context['user_tickets'] = Ticket.objects.filter(user=request.user.id).filter(isTemp=True)
     for t in context['user_tickets']:
         context['total'] += t.screening.price
@@ -118,9 +119,13 @@ def user_logout(request):
             logout(request)
     return redirect("/")
 
-def payment(request,total,ticketList):
+
+def payment(request, total, ticketList):
+    print("payment",ticketList)
+    print("payment",request.POST)
     if request.POST:
         for ticket in ticketList:
-            ticket.isTemp=false
-    return render(request,'payment.html',{'total':total,'ticketList':ticketList})
+            ticket.isTemp = False
+            ticket.save(['isTemp'])
+    return render(request, 'payment.html', {'total': total, 'ticketList': ticketList})
 
