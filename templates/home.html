@@ -1,158 +1,56 @@
 {% extends "base.html" %}
-
 {% load static %}
-<body style="background-color:#FAFAD2;">
-<script>
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    window.fbAsyncInit = function () {
-        FB.init({
-            appId: '283394035432709',
-            cookie: true,
-            xfbml: true,  // parse social plugins on this page
-            version: 'v2.8' // use graph api version 2.8
-        });
-
-        FB.getLoginStatus(function (response) {
-        });
-
-    };
-
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-    function logout() {
-        FB.logout(function () {
-        });
-        $.get("/user/logout/", function () {
-            location.reload();
-        });
-        {#        location.href = "/user/logout/";#}
-    }
-
-    function login() {
-        FB.login(function (response) {
-            if (response.status === 'connected') {
-                FB.api('/me', function (response) {
-                    $.post("/user/facebook/", {
-                        csrfmiddlewaretoken: getCookie('csrftoken'),
-                        username: response.name,
-                        password: "facebook"
-                    }, function () {
-                        location.reload();
-                    });
-                });
-            }
-        });
-    }
-</script>
-<script>
-    function searchSubmit() {
-        var action_src = '/movie/search/movie/' + document.getElementById("search-input").value + '/1';
-        document.getElementById('search--form').action = action_src;
-    }
-
-    $(".form-control").bind('blur', function () {
-        setTimeout(function () {
-            $(".searchlistdiv").hide();
-        }, 150);
-    });
-    var last_input_time = Date.now();
-
-    function start_timer() {
-        var this_input_time = Date.now();
-        last_input_time = this_input_time;
-        setTimeout(
-            function (this_input_time) {
-                if (last_input_time === this_input_time)
-                    showResult(document.getElementById('search-input').value);
-            }, 150, this_input_time);
-    }
-
-    function showResult(str) {
-        if (str.length === 0) {
-            $(".searchlistdiv").hide();
-            return;
-        }
-        var path = "/movie/search_suggest/" + str;
-        $.get(path, function (data) {
-            data = JSON.parse(data);
-            if (document.getElementById('search-input').value !== data.text)
-                return;
-            $(".search-movie").siblings().not(".search-actor").remove();
-            for (var i = data.movie.length - 1; i >= 0; i--) {
-                var img = "<img src='" + data.movie[i].poster + "' width='60' height='75'></img>";
-                var link = "<div class='suggest' onclick=\"location.href='/movie/movie_detail/"
-                    + data.movie[i].movieid + "'\">" + img + "<b>" + data.movie[i].title + "</b></div>";
-                $(".search-movie").after(link)
-            }
-            if (data.movie.length === 0)
-                $(".search-movie").after("<div class='no_suggest'><b>No suggestion!</b></div>")
-
-            for (var i = data.actor.length - 1; i >= 0; i--) {
-                var img = "<img src='" + data.actor[i].photo + "' width='60' height='75'></img>";
-                var link = "<div class='suggest' onclick=\"location.href='/movie/actor_detail/"
-                    + data.actor[i].actorid + "'\">" + img + "<b>" + data.actor[i].name + "</b></div>";
-                $(".search-actor").after(link)
-            }
-            if (data.actor.length === 0)
-                $(".search-actor").after("<div class='no_suggest'><b>No suggestion!</b></div>")
-
-            $(".searchlistdiv").show();
-        });
-    }
-</script>
-
 {% block mainbody %}
-    {% load static %}
+
+<html>
+<head>
+    <style>
+        td{
+            border-style:groove;
+            text-align:center;
+        }
+        .title1{
+            font-size: 40px;
+        }
+
+    </style>
+</head>
+<body style="background-color:#FAFAD2;">
+
     <div style=" margin-left: 1%;">
-        <p style="color: white"><b>Most Popular:</b></p>
-        <li>
+        <p style="color: white" class="title1"><b>Most Popular:</b></p>
         {% for id,movie in movies.items %}
                 <a href="/movies/{{ movie.id }}">
-                    <img id="poster" class="img-rounded" src="{{ movie.poster }}" width="125" height="180">
+                    <img id="poster" class="img-rounded" src="{{ movie.poster }}" width="200" height="300">
                 </a>
-
-        {% endfor %}
-        </li>
-        {% for movie in popular %}
-            <a href="/movie/movie_detail/{{ movie.movieid }}">
-                <img id="poster" class="img-rounded" src="{{ movie.poster }}" width="125" height="180">
-            </a>
         {% endfor %}
     </div>
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}"/>
 
     {% load static %}
-    <div style=" margin-left: 1%;">
-        <p style="color: white"><b>On Sale:</b></p>
-        {% for movie in recommendation %}
-            <a href="/movie/movie_detail/{{ movie.movieid }}">
-                <img id="poster" class="img-rounded" src="{{ movie.poster }}" width="125" height="180">
-            </a>
-        {% endfor %}
+    <div class="onSale" style=" margin-left: 1%;">
+        <p style="color: white" class="title1"><b>On Sale:</b></p>
+        <table>
+            <tr>
+            {% for id,screening in screenings.items %}
+                {%if screening.movie.salePrec > 0 %}
+                <div style=" margin-left: 1%;">
+                    <td>
+                        <a href="/tickets/{{ id }}">
+                            <img id="poster" class="img-rounded" src="{{ screening.movie.poster }}" width="200" height="300">
+                        </a>
+                            <p>{{screening.screenDate}}</p>
+                            <p>Previous Price:<del>{{screening.price}}</del></p>
+                            {% with t=screening.price|multiply:screening.movie.salePrec|division:100%}
+                            <p>New Price:{{screening.price|sub:t}}</p>
+                            {% endwith %}
+                    </td>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        </table>
     </div>
-{% endblock %}
-
-
 </body>
 </html>
+{% endblock %}

@@ -15,13 +15,26 @@ from django.contrib.auth.models import User
 def get_item(dictionary, key):
     return dictionary.get(key)
 
+@register.filter
+def multiply(value, arg):
+    return value * arg
+
+@register.filter
+def division(value, arg):
+    return value / arg
+
+@register.filter
+def sub(value, arg):
+    return round(value - arg,2)
 # Create your views here.
 
 
 def home_view(request):
     context = {}
     context['movies'] = dict(sorted({movie.id: movie for movie in Movie.objects.all()}
-                                    .items(), key=lambda item: item[1].rate, reverse=True))
+                                    .items(), key=lambda item: item[1].rate, reverse=True)[0:7])
+    context['screenings'] = dict(sorted({screening.id: screening for screening in Screening.objects.filter(screenDate__gt=now())}
+                                    .items(), key=lambda item: item[1].screenDate)[0:7])
     return render(request, 'home.html', context)
 
 
