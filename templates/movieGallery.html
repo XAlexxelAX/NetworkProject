@@ -17,6 +17,10 @@
             border-style:groove;
             background: url("{% static "images/movie_detail_bg.jpg" %}") no-repeat 50% 50%;
             background-size: cover;
+            align-text:center;
+            position: absolute;
+            left: 25%;
+            width:50.395%;
         }
         .movieTitle{
             padding-bottom: 30px;
@@ -88,21 +92,20 @@
             <h5>Year: {{movie.year}}</h5>
             <h5>Rating: {{movie.rate}}</h5>
             {% for mid,screening in screenings.items %}
-
-            {%if mid == id %}
-            {%for s in screening%}
-            <li><a href="/tickets/{{ screening.id }}">{{s.screenDate}} </a></li>
-            {%endfor%}
-            <div class="buttonCont">
-                {% if screening %}
-                <a href="/screenings/{{ movie.id }}">
-                <span class="button">Screenings</span>
-                </a>
-                {% else %}
-                <h5>Sorry, we couldn't find any screenings.</h5>
-                {% endif %}
-            </div>
-            {%endif%}
+                {%if mid == id %}
+                    {%for s in screening%}
+                        <li><a href="/tickets/{{ s.id }}">{{s.screenDate}} </a></li>
+                    {%endfor%}
+                <div class="buttonCont">
+                    {% if screening %}
+                    <a href="/screenings/{{ movie.id }}">
+                    <span class="button">Screenings</span>
+                    </a>
+                    {% else %}
+                    <h5>Sorry, we couldn't find any screenings.</h5>
+                    {% endif %}
+                </div>
+                {%endif%}
             {% endfor %}
         </div>
                 </td>
