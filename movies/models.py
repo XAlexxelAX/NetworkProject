@@ -19,6 +19,7 @@ class Movie(models.Model):
     genres = models.CharField(blank=False, max_length=100)
     rate = models.DecimalField(decimal_places=1, max_digits=3, default=0, validators=(MinValueValidator(0), MaxValueValidator(10)))
     poster = models.URLField(default='')
+    ageLimit = models.PositiveSmallIntegerField(default=0)
 
 
 class Screening(models.Model):
@@ -32,3 +33,5 @@ class Ticket(models.Model):
     screening = models.ForeignKey(Screening, on_delete=models.PROTECT, null=True)
     row = models.PositiveSmallIntegerField(default=0)
     seat = models.PositiveSmallIntegerField(default=0)
+    isTemp=models.BooleanField(default=True)
+    user=models.SmallIntegerField(default=-1)

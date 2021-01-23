@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block mainbody %}
+
+<html>
+<head>
+    <style>
+        td{
+            padding:5px;
+            width:100%;
+        }
+        .bg {
+            border-style:groove;
+            background: url("{% static "images/movie_detail_bg.jpg" %}") no-repeat 50% 50%;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .movieDetails{
+            align: left;
+            color: black;
+            margin: 0px auto;
+            width: 650px;
+        }
+        .movieTitle{
+            padding-bottom: 30px;
+            font-size: 60px;
+            color: black
+        }
+        .seatBox{
+            border-style:groove;
+        }
+    </style>
+</head>
+<body>
+<div class="bg">
+        <div class="movieDetails">
+            <table>
+                <tr>
+                    <td><h5 class="td">Movie name</h5></td>
+                    <td><h5>Screening date</h5></td>
+                    <td><h5>Hall</h5></td>
+                    <td><h5>Row</h5></td>
+                    <td><h5>Seat</h5></td>
+                    <td><h5>Ticket price</h5></td>
+                </tr>
+                <form role="form" action="/cart" method="POST">
+                {%csrf_token%}
+                {% for t in user_tickets %}
+                    <tr>
+                        <td>{{t.screening.movie.name}}</td>
+                        <td>{{t.screening.screenDate}}</td>
+                        <td>{{t.screening.hall.hallNum}}</td>
+                        <td>{{t.row}}</td>
+                        <td>{{t.seat}}</td>
+                        <td>{{t.screening.price}}</td>
+                    </tr>
+                {% endfor %}
+                    <tr><td><h4>Total price:</h4></td>
+                    <td>{{total}}</td></tr>
+                 </form>
+            </table>
+        </div>
+</div>
+
+<script>
+function seatChosen(r,row,s,seat,name,screening,date) {
+    window.alert("New Ticket Has Been Added To Your Cart Successfully!\n\nDetails:\nMovie: "
+        +name+"\nDate: "+date+"\nSeat: ("+row+","+seat+")")
+}
+</script>
+</body>
+</html>
+{% endblock %}

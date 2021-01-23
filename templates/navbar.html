@@ -2,7 +2,7 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
    <head>
@@ -46,14 +46,25 @@
                      <li><a href='{% url 'home' %}'>Home</a></li>
                      <li><a href='{% url 'movies' %}'>Movies</a></li>
                      {% if request.user.is_authenticated %}
-                        <li>{{request.user}}</li>
+                        <li><a href='{% url 'cart' %}'><img src="{% static "images/cart.png" %}" width="25" height="25"></img></a></li>
+                        <li>
+                        <form action = "logout/" method="post">
+                        {% csrf_token %}
+                           <button name="logout" onclick="logout()">{{request.user}}/Logout</button>
+                        </form>
+                           </li>
                      {%else%}
-                        <li>Login/Create New Account</li>
+                     <li><a href='{% url 'user_login' %}'>Login/Create New Account</a></li>
                      {%endif%}
                   </ul>
                </div>
             </nav>
          </header>
       </div>
+      <script>
+         function logout() {
+            window.alert("You've been logged out successfully!");
+         }
+      </script>
    </body>
 </html>

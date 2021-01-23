@@ -19,6 +19,7 @@ from django.urls import include, path
 from movies import views as movies_views
 from movies import models as movies_models
 from django.conf.urls import url
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('home/movie/', movies_views.movie_view, name='movie'),
@@ -26,8 +27,10 @@ urlpatterns = [
     url(r'^movies/(?P<mid>.*)', movies_views.movie_detail, name='movie_detail'),
     url(r'^screenings/(?P<sid>.*)', movies_views.movie_screenings, name='movie_screenings'),
     url(r'^tickets/(?P<sid>.*)', movies_views.movie_tickets, name='movie_tickets'),
-    url('login', admin.site.urls, name='login'),
     path('admin/', admin.site.urls, name='admin'),
     path('', movies_views.home_view, name='home'),
+    path('login/', movies_views.user_login, name='user_login'),
+    path('logout/', movies_views.user_logout, name='user_logout'),
+    path('cart/', movies_views.cart, name='cart'),
     url(r'.*', lambda request: render(request, '404.html'), name='404'),
 ]
