@@ -121,11 +121,11 @@ def user_logout(request):
 
 
 def payment(request, total, ticketList):
-    print("payment",ticketList)
-    print("payment",request.POST)
+    print("payment"+str(ticketList))
+    print("payment"+str(request.POST))
     if request.POST:
         for ticket in ticketList:
             ticket.isTemp = False
-            ticket.save(['isTemp'])
+            ticket.save()
     return render(request, 'payment.html', {'total': total, 'ticketList': ticketList})
 

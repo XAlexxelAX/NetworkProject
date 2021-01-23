@@ -71,6 +71,11 @@
             .visa {
                 width:50%;
             }
+            .price{
+                padding: 5px 0;
+                text-align: center;
+                border-style:groove;
+            }
         </style>
     </head>
 
@@ -90,7 +95,10 @@
               <div class="card-wrapper"></div>
               <input id="input-button" type="submit" value="Submit"/>
               <div class="visa"><img src="{% static "images/visa.png" %}" width="600" height="120"></img></div>
-              <h2>Cost: {{total}}</h2>
+                  <div class="price">
+              <h2 style="color:white">Total Price: {{total}}</h2>
+                  </div>
+              </form>
         </div>
       </form>
     </body>
