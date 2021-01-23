@@ -118,3 +118,9 @@ def user_logout(request):
             logout(request)
     return redirect("/")
 
+def payment(request,total,ticketList):
+    if request.POST:
+        for ticket in ticketList:
+            ticket.isTemp=false
+    return render(request,'payment.html',{'total':total,'ticketList':ticketList})
+
