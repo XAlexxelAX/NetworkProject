@@ -30,6 +30,9 @@ class Screening(models.Model):
     screenDate = models.DateTimeField()
     price = models.DecimalField(decimal_places=2, max_digits=20, default=39.99, validators=[MinValueValidator(0)])
 
+    class Meta:
+        unique_together = ("hall", "screenDate")
+
 
 class Ticket(models.Model):
     screening = models.ForeignKey(Screening, on_delete=models.PROTECT, null=True)
