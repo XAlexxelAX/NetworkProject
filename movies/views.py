@@ -157,6 +157,7 @@ def movie_view(request):
 
 def cart(request):
     context = {'total': 0}
+    print(request.POST)
     if request.POST:
         if 'remove' in request.POST:
             Ticket.objects.get(id=int(request.POST['remove'])).delete()
@@ -167,12 +168,14 @@ def cart(request):
                 if 'ticket' in t:
                     ticket = Ticket.objects.get(id=int(t.split('_')[1]))
                     ticketList.append(ticket)
-                    total += ticket.screening.price
+                    total += float(ticket.screening.price)*(1-ticket.screening.movie.salePrec/100)
             if total > 0:
-                return payment(request, total, ticketList)
+                return payment(request, round(total, 2), ticketList)
     context['user_tickets'] = Ticket.objects.filter(user=request.user.id).filter(isTemp=True)
     for t in context['user_tickets']:
+        t.screening.price = round(float(t.screening.price)*(1-t.screening.movie.salePrec/100), 2)
         context['total'] += t.screening.price
+        context['total'] = round(context['total'], 2)
     return render(request, "cart.html", context)
 
 
