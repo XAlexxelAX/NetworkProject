@@ -42,7 +42,7 @@
                         <div class="seatBox">
                         {% if s in ticketDict|get_item:r %}
                             {% with ticket=ticketDict|get_item:r|get_item:s %}
-                            {% if not ticket.isTemp %}
+                            {% if not ticket.isTemp or not request.user.id == ticket.user%}
                                     <img src="{% static "images/red_seat.png" %}" width="100" height="150"></img>
                                     <p style="color:red;">Taken</p>
                             {% elif request.user.id == ticket.user %}

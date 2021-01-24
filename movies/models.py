@@ -20,13 +20,18 @@ class Movie(models.Model):
     rate = models.DecimalField(decimal_places=1, max_digits=3, default=0, validators=(MinValueValidator(0), MaxValueValidator(10)))
     poster = models.URLField(default='')
     ageLimit = models.PositiveSmallIntegerField(default=0)
-
+    salePrec=models.PositiveSmallIntegerField(default=0)
+    countRatings=models.PositiveSmallIntegerField(default=0)
+    sumRatings=models.PositiveSmallIntegerField(default=0)
 
 class Screening(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT, related_name='movie')
     hall = models.ForeignKey(Hall, on_delete=models.PROTECT, related_name='hall', null=True)
     screenDate = models.DateTimeField()
     price = models.DecimalField(decimal_places=2, max_digits=20, default=39.99, validators=[MinValueValidator(0)])
+
+    class Meta:
+        unique_together = ("hall", "screenDate")
 
 
 class Ticket(models.Model):
